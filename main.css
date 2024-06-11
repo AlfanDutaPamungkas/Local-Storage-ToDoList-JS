@@ -42,7 +42,6 @@ main {
 
 form {
   width: 600px;
-  background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -165,4 +164,10 @@ button {
   border-radius: 5px;
   margin-left: 10px;
   cursor: pointer;
+}
+
+h2 {
+  text-align:center;
+  margin-top: 30px;
+  margin-bottom:20px
 }

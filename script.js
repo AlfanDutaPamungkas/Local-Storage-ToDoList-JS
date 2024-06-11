@@ -8,10 +8,8 @@ const updateFormEl = document.getElementById("update-form");
 const updateInputEl = document.getElementById("update-input");
 const searchInputEl = document.getElementById("search-input");
 const searchBtnEl = document.getElementById("search-btn"); 
-let anjas = "anjas";
 
-// get task
-const getTask = () =>{
+const getTaskFromStoragte = () => {
   let tasks;
 
   if (localStorage.getItem("tasks") === null) {
@@ -19,6 +17,13 @@ const getTask = () =>{
   } else {
     tasks = JSON.parse(localStorage.getItem("tasks"));
   }
+
+  return tasks;
+}
+
+// get task
+const showTasks = () =>{
+  const tasks = getTaskFromStoragte();
 
   let output;
   const allTasks = tasks.map((task)=>{
@@ -38,52 +43,36 @@ const getTask = () =>{
 const addTask = (e) => {
   e.preventDefault();
   const task = inputEl.value;
+
   if (task) {
-    let tasks;
-    if (localStorage.getItem("tasks") === null) {
-      tasks = [];
-    } else {
-      tasks = JSON.parse(localStorage.getItem("tasks"));
-    }
+    const tasks = getTaskFromStoragte();
     tasks.push({
       id:Date.now(),
       title:task
     });
     localStorage.setItem("tasks",JSON.stringify(tasks));
     inputEl.value = "";
-    getTask();
+    showTasks();
   }
 };
 
 // delete task
 const removeTask = (id) => {
-  let tasks;
-
-  if (localStorage.getItem("tasks") === null) {
-    tasks = [];
-  } else {
-    tasks = JSON.parse(localStorage.getItem("tasks"));
-  }
+  let tasks = getTaskFromStoragte();
 
   tasks = tasks.filter((task)=>{
     return task.id !== id;
   });
 
   localStorage.setItem("tasks",JSON.stringify(tasks));
-  getTask();
+  showTasks();
 };
 
 // update
 const updateTask = (id) => {
   dialogEl.showModal();
 
-  let tasks;
-
-  if (localStorage.getItem("tasks") === null) {
-    tasks = [];
-  } else {
-    tasks = JSON.parse(localStorage.getItem("tasks"));
-  }
+  const tasks = getTaskFromStoragte();
 
   let taskToUpdate = tasks.find(task => task.id == id);
 
@@ -92,24 +81,20 @@ const updateTask = (id) => {
     taskToUpdate.title = updateInputEl.value;
     localStorage.setItem("tasks",JSON.stringify(tasks));
     dialogEl.close();
-    getTask();
+    showTasks();
   });
   updateInputEl.value="";
 };
 
 // search
 const searchTask = (title) => {
-  let output;
   let task = "";
   if (searchInputEl.value === "") {
-    alert("Please input the title of task");
+    return alert("Please input the title of task");
   } 
 
-  if (localStorage.getItem("tasks") === null) {
-    tasks = [];
-  } else {
-    tasks = JSON.parse(localStorage.getItem("tasks"));
-  }
+  const tasks = getTaskFromStoragte();
+  
   title = searchInputEl.value.toLowerCase();
   let taskToSearch = tasks.find(task => task.title.toLowerCase() == title);
   if (taskToSearch !== undefined) {
@@ -119,10 +104,13 @@ const searchTask = (title) => {
       <button onclick = "updateTask(${taskToSearch.id})" id="change" >Change</button>
       <button onclick = "removeTask(${taskToSearch.id})" id="delete">Delete</button>
     </li>
-    <button onclick = "getTask()">Back</button>
+    <button onclick = "showTasks()">Back</button>
     `
   } else {
-    task = "<h1>Task Not Found</h1>";
+    task = `
+      <h1>Task Not Found</h1>
+      <button onclick = "showTasks()">Back</button>
+    `;
   }
   outputEl.innerHTML = task;
   searchInputEl.value = "";
@@ -131,4 +119,4 @@ const searchTask = (title) => {
 // event listener
 form.addEventListener("submit",addTask);
 searchBtnEl.addEventListener("click",searchTask)
-getTask();
+showTasks();
