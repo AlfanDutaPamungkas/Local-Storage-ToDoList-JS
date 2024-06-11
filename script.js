@@ -87,7 +87,7 @@ const updateTask = (id) => {
 };
 
 // search
-const searchTask = (title) => {
+const searchTask = () => {
   let task = "";
   if (searchInputEl.value === "") {
     return alert("Please input the title of task");
@@ -95,7 +95,7 @@ const searchTask = (title) => {
 
   const tasks = getTaskFromStoragte();
   
-  title = searchInputEl.value.toLowerCase();
+  const title = searchInputEl.value.toLowerCase();
   let taskToSearch = tasks.find(task => task.title.toLowerCase() == title);
   if (taskToSearch !== undefined) {
     task = `
